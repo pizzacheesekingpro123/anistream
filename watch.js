@@ -6,8 +6,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("anime-title").textContent = `Watching: ${animeTitle}`;
 
         try {
-            // Fetch anime episodes from Gogoanime API
-            let response = await fetch(`https://api.consumet.org/anime/gogoanime/${encodeURIComponent(animeTitle)}`);
+            // Fetch anime episodes from Zoro.to API (or alternative)
+            let response = await fetch(`https://api.consumet.org/anime/zoro/${encodeURIComponent(animeTitle)}`);
             let data = await response.json();
 
             if (data && data.episodes.length > 0) {
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 // Load first episode by default
                 document.getElementById("video-frame").src = data.episodes[0].url;
 
-                // Add episodes to the sidebar
+                // Add all episodes to the sidebar
                 data.episodes.forEach(episode => {
                     let epButton = document.createElement("button");
                     epButton.textContent = `Episode ${episode.number}`;
@@ -26,11 +26,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                     episodeList.appendChild(epButton);
                 });
             } else {
-                document.getElementById("video-frame").src = "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Placeholder
+                document.getElementById("video-frame").src = "https://www.youtube.com/embed/error"; // Error placeholder
             }
         } catch (error) {
             console.log("Error loading episodes:", error);
-            document.getElementById("video-frame").src = "https://www.youtube.com/embed/dQw4w9WgXcQ"; // Placeholder
+            document.getElementById("video-frame").src = "https://www.youtube.com/embed/error"; // Error placeholder
         }
     }
 });
