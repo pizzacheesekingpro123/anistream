@@ -3,6 +3,7 @@ body {
     background-color: #1e1e1e;
     color: white;
     text-align: center;
+    margin: 0;
 }
 
 header {
@@ -29,9 +30,43 @@ header {
     background: #333;
     padding: 10px;
     border-radius: 8px;
+    text-align: center;
 }
 
 .anime-card img {
     width: 100%;
     border-radius: 5px;
+}
+
+.watch-container {
+    display: flex;
+}
+
+#sidebar {
+    width: 250px;
+    background: #222;
+    padding: 15px;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+#sidebar button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background: #ff4500;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#sidebar button:hover {
+    background: #e03e00;
+}
+
+#video-frame {
+    flex: 1;
+    height: 90vh;
+    border: none;
 }
