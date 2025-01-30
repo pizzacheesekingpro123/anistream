@@ -13,7 +13,6 @@ document.getElementById("search-bar").addEventListener("input", async function (
                             id
                             title { romaji }
                             coverImage { large }
-                            siteUrl
                         }
                     }
                 }
