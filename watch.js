@@ -1,54 +1,44 @@
 document.addEventListener("DOMContentLoaded", async function () {
     let params = new URLSearchParams(window.location.search);
-    let animeTitle = params.get("title");
+    let animeId = params.get("id");
 
-    if (animeTitle) {
-        document.getElementById("anime-title").textContent = `Watching: ${animeTitle}`;
-
+    if (animeId) {
         try {
-            let response = await fetch(`https://api.consumet.org/anime/zoro/${encodeURIComponent(animeTitle)}`);
+            let response = await fetch(`https://api.consumet.org/anime/zoro/info/${encodeURIComponent(animeId)}`);
             let data = await response.json();
 
-            if (data && data.episodes.length > 0) {
-                let episodeList = document.getElementById("episode-list");
+            document.getElementById("anime-title").textContent = `Watching: ${data.title}`;
+            
+            let episodeList = document.getElementById("episode-list");
+            let firstEpisode = data.episodes[0].id;
 
-                // Load first episode
-                document.getElementById("video-frame").src = data.episodes[0].url;
+            // Load first episode by default
+            loadEpisode(firstEpisode);
 
-                // Add episodes to sidebar
-                data.episodes.forEach(episode => {
-                    let epButton = document.createElement("button");
-                    epButton.textContent = `Episode ${episode.number}`;
-                    epButton.onclick = () => {
-                        document.getElementById("video-frame").src = episode.url;
-                    };
-                    episodeList.appendChild(epButton);
-                });
+            // Add episodes to sidebar
+            data.episodes.forEach(episode => {
+                let epButton = document.createElement("button");
+                epButton.textContent = `Episode ${episode.number}`;
+                epButton.onclick = () => loadEpisode(episode.id);
+                episodeList.appendChild(epButton);
+            });
 
-                // Fetch anime clips
-                let clipsResponse = await fetch(`https://api.consumet.org/anime/zoro/${encodeURIComponent(animeTitle)}/clips`);
-                let clipsData = await clipsResponse.json();
-
-                if (clipsData.length > 0) {
-                    let clipSection = document.createElement("h2");
-                    clipSection.textContent = "Anime Clips";
-                    episodeList.appendChild(clipSection);
-
-                    clipsData.forEach(clip => {
-                        let clipButton = document.createElement("button");
-                        clipButton.textContent = clip.title;
-                        clipButton.onclick = () => {
-                            document.getElementById("video-frame").src = clip.url;
-                        };
-                        episodeList.appendChild(clipButton);
-                    });
-                }
-            } else {
-                document.getElementById("video-frame").src = "https://www.youtube.com/embed/error"; // Error placeholder
-            }
         } catch (error) {
-            console.log("Error loading videos:", error);
-            document.getElementById("video-frame").src = "https://www.youtube.com/embed/error"; // Error placeholder
+            console.log("Error loading anime:", error);
         }
     }
 });
+
+async function loadEpisode(episodeId) {
+    let videoFrame = document.getElementById("video-frame");
+    
+    try {
+        let response = await fetch(`https://api.consumet.org/anime/zoro/watch/${encodeURIComponent(episodeId)}`);
+        let data = await response.json();
+
+        videoFrame.src = data.sources[0].url;  // Load first available source
+    } catch (error) {
+        console.log("Error loading episode:", error);
+        videoFrame.src = "https://www.youtube.com/embed/error";  // Error placeholder
+    }
+}
